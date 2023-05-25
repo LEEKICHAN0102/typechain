@@ -1,71 +1,88 @@
-type Last={
-  <T>(arr:T[]):T
+type Words = {
+    [key:string]:string
 }
 
-const last:Last=(arr)=>{
-  return arr[arr.length-1];
+class Dict{
+    private words:Words
+    constructor(){
+        this.words={}
+    }
+    add(word:Word){
+        if(this.words[word.term]===undefined){
+            this.words[word.term]=word.def
+        }
+        return undefined
+    }
+    get(word:Word){
+        return this.words[word.def]
+    }
+    delete(word:Word){
+        if(this.words[word.term]){
+            delete this.words[word.term]
+        }
+    }
+    update(word:Word){
+        if (this.words[word.term] !== undefined) {
+            this.words[word.term] = word.def
+        }
+    }
+    showAll(){
+        Object.keys(this.words).forEach((term)=>{
+            const printTerm=this.words[term];
+            console.log(`${printTerm}`);
+        })
+    }
+    count():number{
+            return Object.keys(this.words).length;
+    }
+    upsert(word:Word){
+        if(this.words[word.term]===undefined){
+            this.add(word)
+        }else{
+            this.add(word)
+        }
+    }
+    exist(term:string):boolean{
+        return this.words[term]!==undefined;
+    }
+    bulkAdd(wordList:Word[]){
+        wordList.forEach((word)=>{
+            this.add(word);
+        })
+    }
+    bulkDelete(termList: string[]) {
+        termList.forEach((term) => {
+        const word = new Word(term, "");
+        this.delete(word);
+        });
+    }
 }
 
-last([1,2,3,4,5]);
+ class Word {
+    constructor(
+        public term: string,
+        public def:string
+    ){}
+ }
 
-type Prepend={
-  <T,F extends T>(arr:T[],item:F):T[]
-}
-
-const prepend:Prepend=<T,F extends T>(arr:T[],item:F)=>{
-  return [item ,...arr ];
-}
-
-const arr=([1,2,3,4]);
-const arrPrepend=prepend(arr,5);
-
-type Mix={
-  <T,F>(arr1:T[],arr2:F[]):(T | F)[]
-}
-
-const mix:Mix=<T,F>(arr1:T[],arr2:F[])=>{
-  return [...arr1 , ... arr2];   
-}
-
-mix([1,2,3],["a","b","c"]);
-
-type Count={
-  <T>(arr:T[]):number
-}
-
-const count:Count= (arr) => {
-  return arr.length
-}
-
-count([1,2,3,4,5]);
-
-type FindIndex={
-  <T,F extends T>(arr:T[],item:F):number|null
-}
-
-// const findIndex: FindIndex = <T, F extends T>(arr: T[], item: F) => {
-// if (arr.includes(item)) {
-//   return arr.indexOf(item);
-// } else {
-//   return null;
-// }
-// };
-
-type Slice={
-  <T>(arr:T[],startIndex:number,endIndex?:number):T[]
-}
-
-function slice<T>(arr:T[],startIndex:number,endIndex?:number){
-  if(!endIndex){
-      return arr.slice(startIndex);
-  }else{
-      return arr.slice(startIndex,endIndex);
-  }
-}
-
-//When writing an arrow function, an error such as "react is not found" occurs. Why is that? 😂 
-//It's just a playground error, right?
-
-
-slice([1,2,3,4,5,6,7,8,9,10],3);
-slice([1,2,3,4,5,6,7,8,9,10],4,7);
+const dict=new Dict
+const wordHamburger=new Word("햄버거","고기를 갈아 넣고 버무린 뒤 구워낸 햄버그 스테이크(패티)를 빵에 싸먹는다.")
+const added=dict.add(wordHamburger); // add word
+const deff=dict.get(wordHamburger);
+const deleted=dict.delete(wordHamburger); //delete word
+const wordUpdate=new Word("햄버거","치즈와 소스 각종 토핑을 올려 화덕에 구워 먹는 이탈리아의 전통요리");
+const updated=dict.update(wordUpdate);
+const printWords=dict.showAll();
+const showCount=dict.count();
+const updateAndinsert=dict.upsert(new Word("치킨","닭을 기름에 튀겨서 만든요리 아주 맛이 좋음"));
+const inserAndUpdate=dict.upsert(new Word("햄버거","고기를 갈아 넣고 버무린 뒤 구워낸 햄버그 스테이크(패티)를 빵에 싸먹는다."));
+const existWord=dict.exist("치킨");
+const noExistWord=dict.exist("오징어튀김");
+const wordList=[
+    {term:"라면",def:"해산물 또는 육고기를 넣어 삶은 육수를 고명과 같이 먹는 일본식 면 요리"},
+    {term:"돼지국밥",def:"돼지 살코기와 특수부위를 삶은 육수를 밥과 같이 먹는 한국식 국물 요리"},
+    ];
+dict.bulkAdd(wordList);
+dict.showAll();
+dict.bulkDelete(["라면","돼지국밥"]);
+dict.showAll();
